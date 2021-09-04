@@ -1,4 +1,5 @@
 /* mysql -u root -p */
+USE employees_tracker;
 
 DROP TABLE IF EXISTS employees;
 DROP TABLE IF EXISTS title;
@@ -13,7 +14,8 @@ CREATE TABLE title (
   id INTEGER AUTO_INCREMENT PRIMARY KEY,
   title VARCHAR(50) NOT NULL,
   salary INTEGER,
-  manager VARCHAR(30)
+  department_id INTEGER,
+  CONSTRAINT fk_department FOREIGN KEY(department_id) REFERENCES departments(id)
 );
 
 
@@ -23,6 +25,7 @@ CREATE TABLE employees (
   last_name VARCHAR(30) NOT NULL,
   title_id INTEGER,
   department_id INTEGER,
+  manager VARCHAR(30),
   CONSTRAINT fk_title FOREIGN KEY(title_id) REFERENCES title(id),
   CONSTRAINT fk_deparment FOREIGN KEY(department_id) REFERENCES departments(id)
 );

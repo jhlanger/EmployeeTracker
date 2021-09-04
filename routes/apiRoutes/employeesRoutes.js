@@ -4,7 +4,7 @@ const db = require('../../db/connection');
 const inputCheck = require('../../utils/inputCheck');
 
 router.get('/employees', (req, res) => {
-    const sql = `SELECT employees.id, employees.first_name, employees.last_name, departments.department, title.title, title.salary, title.manager
+    const sql = `SELECT employees.id, employees.first_name, employees.last_name, departments.department, title.title, title.salary, employees.manager
     FROM employees
     LEFT JOIN departments ON employees.department_id = departments.id
     LEFT JOIN title ON employees.title_id = title.id;`;
@@ -23,7 +23,7 @@ router.get('/employees', (req, res) => {
 
 // Get a single employee
 router.get('/employees/:id', (req, res) => {
-    const sql = `SELECT employees.id, employees.first_name, employees.last_name, departments.department, title.title, title.salary, title.manager
+    const sql = `SELECT employees.id, employees.first_name, employees.last_name, departments.department, title.title, title.salary, employees.manager
     FROM employees
     LEFT JOIN departments ON employees.department_id = departments.id
     LEFT JOIN title ON employees.title_id = title.id
@@ -79,7 +79,7 @@ router.post('/employees', ({ body }, res) => {
 
     const sql = `INSERT INTO employees (first_name, last_name, title_id, department_id)
       VALUES (?,?,?,?)`;
-    const params = [body.first_name, body.last_name, body.title_id];
+    const params = [body.first_name, body.last_name, body.title_id, body.department_id];
 
     db.query(sql, params, (err, result) => {
         if (err) {
