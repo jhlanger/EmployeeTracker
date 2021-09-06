@@ -51,10 +51,10 @@ const deleteEmployee = function (id) {
     });
 }
 
-const addEmployee = function (first_name, last_name, title_id, department_id, manager) {
-    const sql = `INSERT INTO employees (first_name, last_name, title_id, department_id, manager)
-      VALUES (?,?,?,?)`;
-    const params = [first_name, last_name, title_id, department_id, manager];
+const addEmployee = function (first_name, last_name, title_id, department_id, supervisor) {
+    const sql = `INSERT INTO employees (first_name, last_name, title_id, department_id, supervisor)
+      VALUES (?,?,?,?,?)`;
+    const params = [first_name, last_name, title_id, department_id, supervisor];
 
     db.query(sql, params, (err, row) => {
         if (err) {
@@ -297,10 +297,107 @@ const viewEmployeeData = function () {
         })
 }
 
+const addEmployeeData = function () {
+    return inquirer
+        .prompt([
+            {
+                type: 'rawlist',
+                name: 'addDataChoice',
+                message: 'What would you like to add?',
+                choices: ['Employee', 'Role', 'Department']
+
+            }
+        ]).then(addEmployeeData => {
+            if(addEmployeeData.addDataChoice === 'Employee'){
+                const newEmployeeInfo = function () {
+                    return inquirer
+                        .prompt([
+                            {
+                                type: 'text',
+                                name: 'first_name',
+                                message: 'Please enter the new employees first name.'
+                            },
+                            {
+                                type: 'text',
+                                name: 'last_name',
+                                message: 'Please enter the new employees last name.'
+                            },
+                            {
+                                type: 'text',
+                                name: 'titleID',
+                                message: 'Please enter the new employees title ID number.'
+                            },
+                            {
+                                type: 'text',
+                                name: 'departmentID',
+                                message: 'Please enter the new employees department ID number.'
+                            },
+                            {
+                                type: 'text',
+                                name: 'supervisor',
+                                message: 'Please enter the new employees manager.'
+
+                            }
+                        ]).then(newEmployeeInfo => {
+                            addEmployee(newEmployeeInfo.first_name, newEmployeeInfo.last_name,newEmployeeInfo.titleID, newEmployeeInfo.departmentID, newEmployeeInfo.supervisor);
+                            return initialPrompt();
+                        })
+
+                }
+                newEmployeeInfo();
+                
+            }else if (addEmployeeData.addDataChoice === 'Department'){
+                const newDepartmentInfo = function () {
+                    return inquirer
+                        .prompt([
+                            {
+                                type: 'text',
+                                name: 'department',
+                                message: 'Please enter the new department name.'
+                            }
+                            
+                        ]).then(newDepartmentInfo => {
+                            addDepartment(newDepartmentInfo.department);
+                            return initialPrompt();
+                        })
+
+                }
+                newDepartmentInfo();
+            }else if(addEmployeeData.addDataChoice === 'Role'){
+                const newRoleInfo = function () {
+                    return inquirer
+                    .prompt([
+                        {
+                            type: 'text',
+                            name: 'title',
+                            message: 'Please enter the new role name.'
+                        },
+                        {
+                            type: 'text',
+                            name: 'salary',
+                            message: 'Please enter the new role salary.'
+                        },
+                        {
+                            type: 'text',
+                            name: 'departmentID',
+                            message: 'Please enter the new role department ID number.'
+                        }
+                      
+                    ]).then(newRoleInfo => {
+                        addRole(newRoleInfo.title, newRoleInfo.salary, newRoleInfo.departmentID);
+                        return initialPrompt();
+                    })
+
+                }
+                newRoleInfo();
+            }
+        })
+}
+
 //getAllEmployees();
 //getOneEmployees(11);
 //deleteEmployee(11);
-//createUser('jon', 'langerman', 1, 1);
+//addEmployee = function (first_name, last_name, title_id, department_id, supervisor)
 //updateTitle(2, 21);
 //getAllDepartments();
 //getAllRoles();
