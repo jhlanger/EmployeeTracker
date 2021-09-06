@@ -1,5 +1,4 @@
 /* mysql -u root -p */
-USE employees_tracker;
 
 DROP TABLE IF EXISTS employees;
 DROP TABLE IF EXISTS title;
@@ -15,7 +14,7 @@ CREATE TABLE title (
   title VARCHAR(50) NOT NULL,
   salary INTEGER,
   department_id INTEGER,
-  CONSTRAINT fk_department FOREIGN KEY(department_id) REFERENCES departments(id)
+  CONSTRAINT fk_department FOREIGN KEY(department_id) REFERENCES departments(id) ON DELETE SET NULL
 );
 
 
@@ -25,9 +24,9 @@ CREATE TABLE employees (
   last_name VARCHAR(30) NOT NULL,
   title_id INTEGER,
   department_id INTEGER,
-  manager VARCHAR(30),
-  CONSTRAINT fk_title FOREIGN KEY(title_id) REFERENCES title(id),
-  CONSTRAINT fk_deparment FOREIGN KEY(department_id) REFERENCES departments(id)
+  supervisor VARCHAR(30),
+  CONSTRAINT fk_title FOREIGN KEY(title_id) REFERENCES title(id) ON DELETE SET NULL, 
+  CONSTRAINT fk_deparment FOREIGN KEY(department_id) REFERENCES departments(id) ON DELETE SET NULL
 );
 /*
  SELECT employees.first_name, employees.last_name FROM employees JOIN title ON employee.title_id = title.id JOIN departments ON departments.id = title.department_id;

@@ -19,7 +19,7 @@ VALUES
   ('Legal Team Lead', 250000, 4),
   ('Lawyer', 190000, 4);
  
-INSERT INTO employees (first_name, last_name, title_id, department_id, manager)
+INSERT INTO employees (first_name, last_name, title_id, department_id, supervisor)
 VALUES
   ('Ronald', 'Firbank', 1, 1,'Piers Gaveston'),
   ('Virginia', 'Woolf', 2, 1, 'Ronald Firbank'),
