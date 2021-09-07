@@ -2,7 +2,7 @@
 const db = require('./db/connection');
 const inquirer = require('inquirer');
 
-
+// sql query to get all employees in a neat table 
 const getAllEmployees = function () {
     const sql = `SELECT employees.id, employees.first_name, employees.last_name, departments.department, title.title, title.salary, employees.supervisor
     FROM employees
@@ -12,31 +12,13 @@ const getAllEmployees = function () {
     db.query(sql, (err, rows) => {
         if (err) {
             console.log('You have an error: ', err);
-            return;
+            return initialPrompt();
         }
         console.table(rows);
     });
 
 }
-
-const getOneEmployees = function (id) {
-    const sql = `SELECT employees.id, employees.first_name, employees.last_name, departments.department, title.title, title.salary, employees.supervisor
-    FROM employees
-    LEFT JOIN departments ON employees.department_id = departments.id
-    LEFT JOIN title ON employees.title_id = title.id
-    WHERE employees.id = ?`;
-    const params = id;
-
-    db.query(sql, params, (err, row) => {
-        if (err) {
-            console.log('You have an error: ', err);
-            return;
-        }
-        console.table(row);
-    });
-
-}
-
+// sql query to delete an employee with a specific ID
 const deleteEmployee = function (id) {
     const sql = `DELETE FROM employees WHERE id = ?`;
     const params = id;
@@ -44,13 +26,13 @@ const deleteEmployee = function (id) {
     db.query(sql, params, (err, row) => {
         if (err) {
             console.log('You have an error: ', err);
-            return;
+            return initialPrompt();
         }
         console.log('Employee: ' + id + ' has been deleted.')
         getAllEmployees();
     });
 }
-
+// add employee to employees table 
 const addEmployee = function (first_name, last_name, title_id, department_id, supervisor) {
     const sql = `INSERT INTO employees (first_name, last_name, title_id, department_id, supervisor)
       VALUES (?,?,?,?,?)`;
@@ -59,13 +41,13 @@ const addEmployee = function (first_name, last_name, title_id, department_id, su
     db.query(sql, params, (err, row) => {
         if (err) {
             console.log('You have an error: ', err);
-            return;
+            return initialPrompt();
         }
         console.log('Employee: ' + first_name + ' ' + last_name + ' has been created.')
         getAllEmployees();
     });
 }
-
+// update the employee title_id 
 const updateEmployeeRole = function (new_title_id, id) {
     const sql = `UPDATE employees SET title_id = ? 
                  WHERE id = ?`;
@@ -73,25 +55,25 @@ const updateEmployeeRole = function (new_title_id, id) {
     db.query(sql, params, (err, row) => {
         if (err) {
             console.log('You have an error: ', err);
-            return;
+            return initialPrompt();
         }
         console.log('Employee: ' + id + ' had their role updated.')
-        geAllEmployees();
+        getAllEmployees();
     });
 }
-
+// view all departments
 const getAllDepartments = function () {
     const sql = `SELECT * FROM departments;`;
 
     db.query(sql, (err, rows) => {
         if (err) {
             console.log('You have an error: ', err);
-            return;
+            return initialPrompt();
         }
         console.table(rows);
     });
 }
-
+// add department
 const addDepartment = function (department) {
     const sql = `INSERT INTO departments (department)
       VALUES (?)`;
@@ -100,13 +82,13 @@ const addDepartment = function (department) {
     db.query(sql, params, (err, row) => {
         if (err) {
             console.log('You have an error: ', err);
-            return;
+            return initialPrompt();
         }
         console.log('Department: ' + department + ' has been created.')
         getAllDepartments();
     });
 }
-
+// view all roles from title table 
 const getAllRoles = function () {
     const sql = `SELECT title.id, title.title,  title.salary, departments.department 
     FROM title                                                          
@@ -115,12 +97,12 @@ const getAllRoles = function () {
     db.query(sql, (err, rows) => {
         if (err) {
             console.log('You have an error: ', err);
-            return;
+            return initialPrompt();
         }
         console.table(rows);
     });
 }
-
+// add role to title table
 const addRole = function (title, salary, department_id) {
     const sql = `INSERT INTO title (title, salary, department_id)
       VALUES (?,?,?)`;
@@ -129,13 +111,13 @@ const addRole = function (title, salary, department_id) {
     db.query(sql, params, (err, row) => {
         if (err) {
             console.log('You have an error: ', err);
-            return;
+            return initialPrompt();
         }
         console.log('Role: ' + title + ' has been created.')
         getAllRoles();
     });
 }
-
+// update an employees manager
 const updateEmployeeManager = function (new_supervisor, id) {
     const sql = `UPDATE employees SET supervisor = ? 
     WHERE id = ?`;
@@ -143,12 +125,13 @@ const updateEmployeeManager = function (new_supervisor, id) {
     db.query(sql, params, (err, row) => {
         if (err) {
             console.log('You have an error: ', err);
-            return;
+            return initialPrompt();
         }
         console.log('Employee: ' + id + ' had their supervisor updated to ' + new_supervisor + '.')
         getAllEmployees();
     });
 }
+//view employees by specific manager
 const getEmployeeByManager = function (supervisor) {
     const sql = `SELECT id, first_name, last_name, supervisor
     FROM employees
@@ -158,12 +141,12 @@ const getEmployeeByManager = function (supervisor) {
     db.query(sql, params, (err, row) => {
         if (err) {
             console.log('You have an error: ', err);
-            return;
+            return initialPrompt();
         }
         console.table(row);
     });
 }
-
+// view employees with a specific department 
 const getEmployeeByDepartment = function (department_id) {
     const sql = `SELECT id, first_name, last_name, department_id
     FROM employees
@@ -173,12 +156,12 @@ const getEmployeeByDepartment = function (department_id) {
     db.query(sql, params, (err, row) => {
         if (err) {
             console.log('You have an error: ', err);
-            return;
+            return initialPrompt();
         }
         console.table(row);
     });
 }
-
+// delete department with specific ID 
 const deleteDepartment = function (id) {
     const sql = `DELETE FROM departments WHERE id = ?`;
     const params = id;
@@ -186,13 +169,13 @@ const deleteDepartment = function (id) {
     db.query(sql, params, (err, row) => {
         if (err) {
             console.log('You have an error: ', err);
-            return;
+            return initialPrompt();
         }
         console.log('Department: ' + id + ' has been deleted.')
         getAllDepartments();
     });
 }
-
+// delete role with specific ID
 const deleteRole = function (id) {
     const sql = `DELETE FROM title WHERE id = ?`;
     const params = id;
@@ -200,13 +183,13 @@ const deleteRole = function (id) {
     db.query(sql, params, (err, row) => {
         if (err) {
             console.log('You have an error: ', err);
-            return;
+            return initialPrompt();
         }
         console.log('Role: ' + id + ' has been deleted.')
         getAllRoles();
     });
 }
-
+// Intial leading questions for view/add/update or delete
 const initialPrompt = function () {
     return inquirer
         .prompt([
@@ -228,7 +211,8 @@ const initialPrompt = function () {
             }
         })
 }
-
+// Below are futher leading questions and follow up questions to get the data needed to query
+// sql and display or do the required action. The data is gathered using inquirer.
 const viewEmployeeData = function () {
     return inquirer
         .prompt([
@@ -239,6 +223,7 @@ const viewEmployeeData = function () {
                 choices: ['View all employees', 'View all Departments', 'View All Roles', 'View employees by manager', 'View employees by department']
             }
         ]).then(viewEmployeeData => {
+            // if view all employees run getallemployees etc
             if (viewEmployeeData.viewEmployeeChoice === 'View all employees') {
                 getAllEmployees();
                 return initialPrompt();
@@ -288,7 +273,6 @@ const viewEmployeeData = function () {
                              }
                         ]).then(inputDepartmentID => {
                             getEmployeeByDepartment(inputDepartmentID.departmentID);
-                            //add input validation
                             return initialPrompt();
                         })
                 }
@@ -394,24 +378,129 @@ const addEmployeeData = function () {
         })
 }
 
-//getAllEmployees();
-//getOneEmployees(11);
-//deleteEmployee(11);
-//addEmployee = function (first_name, last_name, title_id, department_id, supervisor)
-//updateTitle(2, 21);
-//getAllDepartments();
-//getAllRoles();
-//addDepartment('Test');
-//addRole('testing', 1000000, 5);
-//updateEmployeeManager('Ronald Firbank', 10);
-//getEmployeeByManager('Ronald Firbank');
-//getEmployeeByDepartment(1);
-//deleteRole(1);
-//deleteDepartment(1);
+const updateEmployeeData = function () {
+    return inquirer
+        .prompt([
+            {
+                type: 'rawlist',
+                name: 'updateDataChoice',
+                message: 'What would you like to update?',
+                choices: ['Employee Role', 'Employee Manager']
+            }
+        ]).then(updateEmployeeData => {
+            if(updateEmployeeData.updateDataChoice === 'Employee Role'){
+                const newRoleInfo = function () {
+                    return inquirer
+                        .prompt([
+                            {
+                                type: 'text',
+                                name: 'employeeID',
+                                message: 'Please enter the ID number of the employee you would like to update.'
+                            },
+                            {
+                                type: 'text',
+                                name: 'newRoleID',
+                                message: 'Please enter the new role ID for the employee'
+                            }
+                        ]).then(newRoleInfo => {
+                            updateEmployeeRole(newRoleInfo.newRoleID, newRoleInfo.employeeID);
+                            return initialPrompt();
+                        })
+                }
+                newRoleInfo();
+            }else if( updateEmployeeData.updateDataChoice === 'Employee Manager') {
+                const newManagerInfo = function () {
+                    return inquirer
+                        .prompt([
+                            {
+                                type: 'text',
+                                name: 'employeeID',
+                                message: 'Please enter the ID number of the employee you would like to update.'
+                            },
+                            {
+                                type: 'text',
+                                name: 'newManager',
+                                message: 'Please enter the new manager for the employee'
+                            }
+                        ]).then(newManagerInfo => {
+                            updateEmployeeManager( newManagerInfo.newManager, newManagerInfo.employeeID);
+                            return initialPrompt();
+                        })
+                }
+                newManagerInfo();
+            }
+        })
+    }
 
+        const deleteEmployeeData = function () {
+            return inquirer
+                .prompt([
+                    {
+                       type: 'rawlist',
+                       name: 'deleteDataChoice',
+                       message: 'What would you like to delete?',
+                       choices: ['Employee', 'Role', 'Department']
+                    
+                    }
+                ]).then(deleteEmployeeData => {
+                    if(deleteEmployeeData.deleteDataChoice === 'Employee') {
+                        const deleteEmployeeInfo = function () {
+                            return inquirer
+                                .prompt([
+                                    {
+                                        type: 'text',
+                                        name: 'employeeID',
+                                        message: 'What is the ID of the employee that is being deleted?'
+                                    }
+                                ]).then(deleteEmployeeInfo => {
+                                    deleteEmployee(deleteEmployeeInfo.employeeID);
+                                    return initialPrompt();
+                                })
+                        }
+                        deleteEmployeeInfo();
+                    }else if(deleteEmployeeData.deleteDataChoice === 'Role') {
+                        const deleteRoleInfo = function () {
+                            return inquirer
+                                .prompt([
+                                    {
+                                        type: 'text',
+                                        name: 'roleID',
+                                        message: 'What is the ID of the role that is being deleted?'
+                                    }
+                                ]).then(deleteRoleInfo => {
+                                    deleteRole(deleteRoleInfo.roleID);
+                                    return initialPrompt();
+                                })
+                        }
+                        deleteRoleInfo();
+                    }else if(deleteEmployeeData.deleteDataChoice === 'Department') {
+                        const deleteDepartmentInfo = function () {
+                            return inquirer
+                                .prompt([
+                                    {
+                                        type: 'text',
+                                        name: 'departmentID',
+                                        message: 'What is the ID of the department that is being deleted?'
+                                    }
+                                ]).then(deleteDepartmentInfo => {
+                                    deleteDepartment(deleteDepartmentInfo.departmentID);
+                                    return initialPrompt();
+                                })
+                        }
+                        deleteDepartmentInfo();
+                    }
+                })
+        }
+
+
+// run initial set of questions which will lead into the above follow up questions. 
 initialPrompt();
 
-//add input validation for get employee by ID line 291
+
+//*** TO DO ****/
+
+//add input validation if ID entered does not exist give error message and return to inital prompt
+
 
 
 
